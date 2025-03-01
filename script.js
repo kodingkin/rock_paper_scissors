@@ -12,7 +12,7 @@ for (let i = 0; i < 5; i++) {
 
     // turn it into either one out of three
     let computerChoice = createComputerChoice(random)
-    console.log(computerChoice);
+    // console.log(computerChoice);
 
     // ask for gamer choice
     let gamerChoice = getGamerChoice()
