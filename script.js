@@ -1,39 +1,57 @@
 // declare a computer score and default it as 0
-let computerScore = 0
+let computerScore = 0;
 
 // declare a human score and default it as 0
-let gamerScore = 0
+let gamerScore = 0;
 
-// loop the following code five times
-for (let i = 0; i < 5; i++) {
+let executed = false;
 
-    // let computer make a rondom choice
-    let random = createRandom()
+// delcare DOM opject
+const container = document.querySelector('body');
+const rockButton = document.querySelector('button.rock');
+const paperButton = document.querySelector('button.paper');
+const scissorsButton = document.querySelector('button.scissors');
 
-    // turn it into either one out of three
-    let computerChoice = createComputerChoice(random)
-    // console.log(computerChoice);
+// add event listener to the buttons
+rockButton.addEventListener('click', function() {
+    [computerScore, gamerScore] = playRound('rock', computerScore, gamerScore);
+    console.log(computerScore)
+});
+paperButton.addEventListener('click', function() {
+    [computerScore, gamerScore] = playRound('paper', computerScore, gamerScore);
+});
+scissorsButton.addEventListener('click', function() {
+    [computerScore, gamerScore] = playRound('scissors', computerScore, gamerScore);
+});
 
-    // ask for gamer choice
-    let gamerChoice = getGamerChoice()
 
-    // compare it with computer choice
-    let winner = getWinner(computerChoice, gamerChoice)
-
-    // add point to whoever win
-    computerScore = addPointToComputer (winner, computerScore)
-    gamerScore = addPointToGamer (winner, gamerScore)
-
-    // tell gamer the result of this round
-    printResult (winner, computerScore, gamerScore)
-}
-// print the end message
-console.log(createEndMessage (computerScore, gamerScore));
-// let message = createEndMessage (computerScore, gamerScore);
-// console.log(message);
 
 
 // -----------------------------------------------------------
+
+function playRound(gamerChoice, computerScore, gamerScore) {
+    // let computer make a rondom choice
+    let random = createRandom();
+
+    // turn it into either one out of three
+    let computerChoice = createComputerChoice(random);
+
+    // compare it with computer choice
+    let winner = getWinner(computerChoice, gamerChoice);
+    console.log(winner);
+    // add point to whoever win
+    computerScore = addPointToComputer (winner, computerScore);
+    gamerScore = addPointToGamer (winner, gamerScore);
+
+    // tell gamer the result of this round
+    printResult (winner, computerScore, gamerScore);
+
+    //print the result if any player reach 5 point
+    printFinalWinner (computerScore, gamerScore, winner);
+
+    return [computerScore, gamerScore];
+}
+
 function createRandom () {
     let random = Math.random();
     return random;
@@ -52,7 +70,7 @@ function getGamerChoice () {
     while (result != true) {
         let gamerChoice = prompt('What is your choice? Rock Paper or Scissors?');
         gamerChoice = gamerChoice.toLowerCase();
-        if (gamerChoice == 'paper' || gamerChoice == 'rock' || gamerChoice == "scissors") {
+        if (gamerChoice == 'paper' || gamerChoice == 'rock' || gamerChoice == 'scissors') {
             result = true;
             return gamerChoice
         } else {
@@ -89,22 +107,31 @@ function addPointToGamer (winner, gamerScore) {
 }
 
 function printResult (winner, computerScore, gamerScore) {
+    const endMessage = document.createElement('div');
+
     if (winner != 'draw'){
-        console.log('The winner of this round is ',winner, ', the current point of each player is \nComputer = ',computerScore, '\nGamer = ', gamerScore);
+        const str = ['The winner of this round is ', winner , ', the current point of each player is \nComputer = ',computerScore, '\nGamer = ', gamerScore].join(' ');
+        endMessage.textContent = str;
+        container.appendChild(endMessage);
     } else {
-        console.log('The result of this round is draw, the current point of each player is \nComputer = ', computerScore, '\nGamer = ', gamerScore);
+        const str = ['The result of this round is draw, the current point of each player is \nComputer = ', computerScore, '\nGamer = ', gamerScore].join(' ');
+        endMessage.textContent = str;
+        container.appendChild(endMessage);
+    }
+
+}
+
+function  printFinalWinner (computerScore, gamerScore, winner) {
+    if (executed != true) {
+        if (computerScore == 5 || gamerScore == 5) {
+            const finalWinner = document.createElement('div')
+            const str = ['The final winner is ', winner].join(' ');
+            finalWinner.textContent = str;
+            container.appendChild(finalWinner);
+            executed = true;
+        }
     }
 }
-
-function createEndMessage (computerScore, gamerScore) {
-    let message = 
-    (gamerScore > computerScore) ? 'End of the game! The winner is gamer! Congratualations!' :
-    (computerScore > gamerScore) ? 'End of the game! The winner is computer.' :
-    'End of the game! The result is draw';
-    return message;
-}
-
-
 
 
 
